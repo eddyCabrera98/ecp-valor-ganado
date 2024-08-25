@@ -17,8 +17,8 @@ def csi(c, s):
 def etc(ea, ac):
     return ea - ac 
 
-def eac(b, cs):
-    return b/cs
+def eac(b, cp):
+    return b/cp
 
 def bac(pvs):
     return sum(pvs)

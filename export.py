@@ -3,9 +3,9 @@ from openpyxl import Workbook
 from openpyxl.drawing.image import Image
 import io
 
-def exportar_excel(df_actividades, df_resultados, graficos):
+def exportar_excel(df_actividades, df_resultados, graficos, nombre_proyecto):
     print("Iniciando la exportación a Excel")
-    filename = "informe_resultados.xlsx"
+    filename = f"{nombre_proyecto}_informe_resultados.xlsx"
     
     try:
         wb = Workbook()

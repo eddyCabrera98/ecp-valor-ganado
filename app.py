@@ -14,6 +14,10 @@ st.sidebar.text('Eddy Cabrera')
 st.sidebar.text('Byron Mendez')
 st.sidebar.text('Carlos Morales')
 
+# Solicitar el nombre del proyecto
+st.write("Ingrese el nombre de su proyecto:")
+nombre_proyecto = st.text_input("", "")
+
 pv_column = "Planned Value (PV)"
 ev_column = "Earned Value (EV)"
 ac_column = "Actual Cost (AC)"
@@ -119,26 +123,27 @@ if st.button("Calcular métricas"):
 
 # Exportar
 if st.button("Exportar Informe Excel"):
-    # Asegurarse de que result_df exista en el estado de la sesión y tenga datos válidos
-    result_df = st.session_state.get('result_df', None)
-    
-    if result_df is not None and not result_df.empty:
-        # Generar el archivo Excel
-        excel_filename = exportar_excel(edited_df, result_df.T, [
-            {'path': 'grafico_cpi_spi.png', 'title': 'Gráfico CPI vs SPI'},
-            {'path': 'grafico_cv_sv.png', 'title': 'Gráfico CV vs SV'},
-            {'path': 'grafico_eac_etc.png', 'title': 'Gráfico EAC vs ETC'}
-        ])
-        st.success(f"Informe Excel generado exitosamente: {excel_filename}")
-
-        # Descargar el archivo
-        if excel_filename:
-            with open(excel_filename, "rb") as file:
-                st.download_button(
-                    label="Descargar Informe Excel",
-                    data=file,
-                    file_name="informe_resultados.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+    if not nombre_proyecto:
+        st.error("Por favor, ingrese un nombre para su proyecto antes de exportar.")
     else:
-        st.error("No se ha calculado ningún resultado. Por favor, calcule las métricas primero.")
+        result_df = st.session_state.get('result_df', None)
+        
+        if result_df is not None and not result_df.empty:
+            excel_filename = exportar_excel(edited_df, result_df.T, [
+                {'path': 'grafico_cpi_spi.png', 'title': 'Gráfico CPI vs SPI'},
+                {'path': 'grafico_cv_sv.png', 'title': 'Gráfico CV vs SV'},
+                {'path': 'grafico_eac_etc.png', 'title': 'Gráfico EAC vs ETC'}
+            ], nombre_proyecto)
+            st.success(f"Informe Excel generado exitosamente: {excel_filename}")
+
+            # Descargar el archivo
+            if excel_filename:
+                with open(excel_filename, "rb") as file:
+                    st.download_button(
+                        label="Descargar Informe Excel",
+                        data=file,
+                        file_name=f"{nombre_proyecto}_informe_resultados.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+        else:
+            st.error("No se ha calculado ningún resultado. Por favor, calcule las métricas primero.")
